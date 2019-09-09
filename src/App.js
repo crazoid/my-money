@@ -1,5 +1,5 @@
 import React from 'react'
-import useGet from './useGet.js'
+import Rest from './rest.js'
 
 /*
 axios
@@ -19,16 +19,34 @@ axios
   })
 */
 
+const baseURL = 'https://mymoney-crazoid.firebaseio.com/'
+const { useGet, usePost, useDelete } = Rest(baseURL)
+
+//const url2 = 'http://httpbin.org/ip'
 
 function App() {
-  const data = useGet('https://mymoney-crazoid.firebaseio.com/movimentacoes/2019-08.json')
-  const data2 = useGet('http://httpbin.org/ip')
+  const data = useGet('movimentacoes/2019-08')
+  const [postData, post] = usePost('movimentacoes/2019-08')
+  const [deleteData, remove] = useDelete()
+
+  const doRemove = () => {
+    remove('movimentacoes/2019-08/-LoGWEd4zmKd_O84rU77')
+  }
+
+  const saveNew = () => {
+    post({ valor: 10, descricao: 'Olá'})
+  }
+
   return (
     <div>
       <h1>My Money</h1>
       { JSON.stringify({data})}
       { data.loading && <p>Loading...</p>}
-      <pre>{ JSON.stringify({data2})}</pre>
+      <pre>{ JSON.stringify({data})}</pre>
+      <button onClick={saveNew}>Salvar</button>
+      <button onClick={doRemove}>Remover</button>
+      <pre>{ JSON.stringify({postData})}</pre>
+      <pre>{ JSON.stringify({deleteData})}</pre>
     </div>
   )
 }
